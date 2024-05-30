@@ -112,7 +112,7 @@ def DiagnosisPage(page: Page, myPyrebase):
             Column(
                 conversations,
                 scroll=True, 
-                height= 520,
+                height= 610,
             ), 
             Row(
                 alignment = MainAxisAlignment.CENTER,

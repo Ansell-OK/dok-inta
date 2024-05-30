@@ -62,7 +62,7 @@ def ChatroomPage(page: Page, myPyrebase, chat_room_id):
             Column(
                 messages,
                 scroll=True, 
-                height= 590,
+                height= 655,
             ), 
             Row(
                 alignment = MainAxisAlignment.CENTER,
