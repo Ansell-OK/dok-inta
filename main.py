@@ -4,8 +4,7 @@ from route.flet_router import Router
 from db.flet_pyrebase import PyrebaseWrapper
 
 def main(page: Page):
-    page.window_width = BASE_WIDTH
-    page.window_height = BASE_HEIGHT
+    
     page.padding = 0
     page.adaptive = True
     page.splash = None

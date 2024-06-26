@@ -10,10 +10,8 @@ def HomePage(page: Page, myPyrebase=None):
 
     def check_none():
         image_url = myPyrebase.get_image_url()
-        if image_url is None:
-            return 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/download%20(1).jpeg?alt=media&token=7ec5832a-79fb-4381-b8f3-2d18d88708cb'
-        else:
-            return image_url
+        
+        return image_url
     
     image_url = check_none()
 
@@ -43,10 +41,13 @@ def HomePage(page: Page, myPyrebase=None):
     file_picker = FilePicker(on_result= on_dialog_result)
     page.overlay.append(file_picker)
     page.update()
+
+    image = Image(src='', width=35, height=35, border_radius=35)
+    big_image = Image(src='', border_radius=75, height=150, width=150)
     
     def handle_logout(*e):
         ProfileName.value = ""
-        myPyrebase.kill_all_streams()
+        myPyrebase.kill_streams()
         myPyrebase.sign_out()
         page.go("/register")
 
@@ -54,18 +55,23 @@ def HomePage(page: Page, myPyrebase=None):
 
     def on_page_load():
         ProfileName.value = "Welcome back"
+        image.src = ''
+        big_image.src = ''
         if myPyrebase.check_token() == "Success":
             handle = myPyrebase.get_username()
             build_recent()
             build_doctorcards()
+            image_url = check_none()
             if handle:
                 ProfileName.value = "Welcome Back, " +  handle
+                image.src = image_url
+                big_image.src  = image_url
             page.update()
 
     
 
     def showMenu(e, screen):
-        screen.height = BASE_HEIGHT
+        screen.height = page.height
         screen.width = 250
 
         page.update()
@@ -88,51 +94,58 @@ def HomePage(page: Page, myPyrebase=None):
                 doctor_id = chat_room["data"]["doctor_id"]
                 doctor_info = myPyrebase.get_doctor_info(doctor_id)
                 unread_count = myPyrebase.notify_unread_messages(chat_room_id)
-                doctor_url = doctor_info.get('image_url')
-                recent_message = RecentMessages(page, myPyrebase, doctor_url, chat_room_id, unread_count)
-                recent_messages.append(recent_message)
+                if unread_count > 0:
+                    doctor_url = doctor_info.get('image_url')
+                    recent_message = RecentMessages(page, myPyrebase, doctor_url, chat_room_id, unread_count)
+                    recent_messages.append(recent_message)
+                else: 
+                    pass
+        else: 
+            pass
     
     def build_doctorcards():
         doctor_cards.clear()
         online_doctors = myPyrebase.fetch_online_doctors()
-        for doctor in online_doctors:
-            doctor_id = doctor['doctor_id']
-            image_url = doctor['image_url']
-            name = doctor['name']
-            speciality = doctor['speciality']
-            online_status = doctor['is_online']
-            doctor_card = DoctorCard(page,myPyrebase, doctor_id, name, speciality, image_url, online_status)
-            doctor_cards.append(doctor_card)
+        if online_doctors:
+            for doctor in online_doctors:
+                doctor_id = doctor['doctor_id']
+                image_url = doctor['image_url']
+                name = doctor['name']
+                speciality = doctor['speciality']
+                online_status = doctor['is_online']
+                doctor_card = DoctorCard(page,myPyrebase, doctor_id, name, speciality, image_url, online_status)
+                doctor_cards.append(doctor_card)
+        else:
+            pass
 
     
 
     main_page_content = Column(
-        scroll=True,
-        height= BASE_HEIGHT,
+        scroll=ScrollMode.HIDDEN,
+        height= page.height,
         controls=[
             Row(
                 alignment= MainAxisAlignment.SPACE_BETWEEN, 
                 controls=[
                     Container(
                         on_click = lambda e:showMenu(e, second_page),
-                        content=Image(src=f'{image_url}', width=35, height=35, border_radius=35)
+                        content=image
                     ), 
                     ProfileName,
-                    IconButton(bgcolor=colors.TRANSPARENT, icon_size=25, icon_color=TEXT_COLOR, icon=icons.NOTIFICATIONS)
+                    Text('')
                 ]
             ),
             Container(height=10),
-            Text('New Messages', color=TEXT_COLOR, font_family='Poppins Bold', size=17),
             Row(
                 recent_messages,
-                scroll=True, 
+                scroll=ScrollMode.HIDDEN, 
             ), 
             Container(height=15),
             Text('Get a Consultation', color=TEXT_COLOR, font_family='Poppins Bold', size=17), 
             Row(
                 doctor_cards,
                 spacing =5, 
-                scroll=True, 
+                scroll=ScrollMode.HIDDEN, 
             ),
             Container(height=15),
             Text('Talk to Dokinta', color=TEXT_COLOR, font_family='Poppins Bold', size=17), 
@@ -162,42 +175,13 @@ def HomePage(page: Page, myPyrebase=None):
                     ]
                 )
             ),
-            Container(
-                padding= padding.only(top=15, left=15, right =15 , bottom=15), 
-                
-                bgcolor= MAIN_BACKGROUND_OPACITY, 
-                border_radius= BORDER_RAD, 
-                content=  Column(
-                    horizontal_alignment= CrossAxisAlignment.CENTER,
-                    controls = [
-                        Container(
-                                content= Column(
-                                    alignment = MainAxisAlignment.START,
-                                    controls=[
-                                        Text('AI-Powered Prescription', color=TEXT_COLOR, size=19, font_family='Poppins Bold'),
-                                        Text('Fast, accurate AI prescription for malaria and typhoid. Transforming healthcare effortlessly!', color=TEXT_COLOR, size=9, font_family='Poppins Regular'), 
-                                    ]
-                                )
-                        ),
-                        Row(
-                            alignment = MainAxisAlignment.SPACE_BETWEEN, 
-                            controls=[
-                                Text(''),
-                                Image(src ='https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FRemedy-rafiki.png?alt=media&token=d173976d-ff4d-4aec-a1fe-17ce77daecb6', height=200, width=200)
-                            ]
-                        ),
-                    ]
-                )
-            )
-            
-
+           
         ]
     )
 
     main_page = Container(
-        height= BASE_HEIGHT,
+        height= page.height,
         bgcolor=SECONDARY_BACKGROUND, 
-        border_radius=BORDER_RAD, 
         padding= padding.only(top=10, left=10, right=10, bottom=10),
         content= main_page_content
 
@@ -231,23 +215,16 @@ def HomePage(page: Page, myPyrebase=None):
                    spacing = 5,
                    alignment = MainAxisAlignment.CENTER,
                    controls=[
-                       Icon(icons.SETTINGS, color= TEXT_COLOR, size=25),
+                       IconButton(icons.SETTINGS, icon_color= TEXT_COLOR, icon_size=25, bgcolor= colors.TRANSPARENT, on_click= lambda _: page.go('/user_details')),
                        Text('Account', font_family='Poppins Regular', size=TEXT_SIZE, color=TEXT_COLOR)
                    ]
                )
            ),
-           Row(
-                alignment= MainAxisAlignment.SPACE_BETWEEN, 
-                controls=[
-                    Text('Recent Messages', font_family='Poppins Regular', size=TEXT_SIZE, color=TEXT_COLOR),
-                    IconButton(bgcolor=colors.TRANSPARENT, icon_color=TEXT_COLOR, icon =icons.MESSAGE_OUTLINED, icon_size=TEXT_SIZE)
-                ]   
-            ),
              Row(
                 alignment= MainAxisAlignment.SPACE_BETWEEN, 
                 controls=[
                     Text('History', font_family='Poppins Regular', size=TEXT_SIZE, color=TEXT_COLOR),
-                    IconButton(bgcolor=colors.TRANSPARENT, icon_color=TEXT_COLOR, icon =icons.MEDICAL_SERVICES, icon_size=TEXT_SIZE)
+                    IconButton(bgcolor=colors.TRANSPARENT, icon_color=TEXT_COLOR, icon =icons.MEDICAL_SERVICES, icon_size=TEXT_SIZE, on_click= lambda _: page.go('/medical_info'))
                 ]   
             ),
             Row(
@@ -255,20 +232,6 @@ def HomePage(page: Page, myPyrebase=None):
                 controls=[
                     Text('Security', font_family='Poppins Regular', size=TEXT_SIZE, color=TEXT_COLOR),
                     IconButton(bgcolor=colors.TRANSPARENT, icon_color=TEXT_COLOR, icon =icons.SHIELD, icon_size=TEXT_SIZE)
-                ]   
-            ),
-            Row(
-                alignment= MainAxisAlignment.SPACE_BETWEEN, 
-                controls=[
-                    Text('Help', font_family='Poppins Regular', size=TEXT_SIZE, color=TEXT_COLOR),
-                    IconButton(bgcolor=colors.TRANSPARENT, icon_color=TEXT_COLOR, icon =icons.QUESTION_MARK, icon_size=TEXT_SIZE)
-                ]   
-            ),
-             Row(
-                alignment= MainAxisAlignment.SPACE_BETWEEN, 
-                controls=[
-                    Text('About', font_family='Poppins Regular', size=TEXT_SIZE, color=TEXT_COLOR),
-                    IconButton(bgcolor=colors.TRANSPARENT, icon_color=TEXT_COLOR, icon =icons.INFO, icon_size=TEXT_SIZE)
                 ]   
             ),
             Row(

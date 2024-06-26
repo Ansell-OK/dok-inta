@@ -29,7 +29,9 @@ class RecentMessages(UserControl):
     
 
     def build(self):
-        return Stack(
+        return Container(
+            on_click = self.navigate_to_room,
+            content=Stack(
                     height=75, 
                     width=75,
                     controls=[ 
@@ -37,10 +39,10 @@ class RecentMessages(UserControl):
                             height=75, 
                             width=75, 
                             bgcolor=TEXT_COLOR,
-                            alignment = alignment.center,
+                            alignment = alignment.center, 
                             border_radius=50, 
                             content= Container( 
-                                on_click = self.navigate_to_room, content = Image(f'{self.doctor_url}', height=60, width=60, border_radius=50)),
+                                 content = Image(f'{self.doctor_url}', height=60, width=60, border_radius=50)),
                         ),
                         Container(
                             alignment= alignment.top_right, 
@@ -48,3 +50,4 @@ class RecentMessages(UserControl):
                         ),
                     ]
                 )
+        )

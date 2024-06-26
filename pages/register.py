@@ -15,6 +15,12 @@ def RegisterPage(page: Page, myPyrebase = None):
         try:
             myPyrebase.register_user(name_input.value, username_input.value, email_input.value, password_input.value)
             name_input.value, username_input.value, email_input.value, password_input.value = '', '', '', ''
+            page.snack_bar = SnackBar(
+            content=Text("Account Created Successfully successfully", color=colors.WHITE),
+            bgcolor=colors.GREEN
+            )
+            page.snack_bar.open = True
+            page.update()
             page.go('/login')
         except:
             handle_sign_in_error()
@@ -34,11 +40,12 @@ def RegisterPage(page: Page, myPyrebase = None):
 
     email_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=TEXT_SIZE, border_color= TEXT_COLOR, color= MAIN_BACKGROUND)
 
-    password_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=TEXT_SIZE, border_color= TEXT_COLOR, color= SECONDARY_BACKGROUND, password= True)
+    password_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=TEXT_SIZE, border_color= TEXT_COLOR, color= SECONDARY_BACKGROUND, password= True, can_reveal_password=True)
 
     register_page_content = Column(
         alignment= MainAxisAlignment.CENTER,
         horizontal_alignment= CrossAxisAlignment.CENTER, 
+        scroll= True,
         controls=[
             Row(
                 alignment = MainAxisAlignment.SPACE_BETWEEN,
@@ -183,7 +190,7 @@ def RegisterPage(page: Page, myPyrebase = None):
     
     register_content = Container(
          
-        height=600,
+        height= page.height * 0.5,
         alignment= alignment.center, 
         bgcolor= MAIN_BACKGROUND_OPACITY, 
         border_radius= BORDER_RAD, 
@@ -192,10 +199,9 @@ def RegisterPage(page: Page, myPyrebase = None):
     )
 
     register_page = Container(
-                height= BASE_HEIGHT,
+                height= page.height,
                 alignment = alignment.center,
                 bgcolor= SECONDARY_BACKGROUND,
-                border_radius= BORDER_RAD, 
                  padding= padding.only(
             top=15, bottom=15, left=15, right = 15
         ),

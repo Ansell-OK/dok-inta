@@ -20,6 +20,12 @@ def LoginPage(page: Page, myPyrebase=None):
         try:
             myPyrebase.sign_in(email_input.value, password_input.value)
             password_input.value = ""
+            page.snack_bar = SnackBar(
+            content=Text("Logged In successfully", color=colors.WHITE),
+            bgcolor=colors.GREEN
+            )
+            page.snack_bar.open = True
+            page.update()
             page.go("/home")
         except:
             handle_sign_in_error()
@@ -31,8 +37,8 @@ def LoginPage(page: Page, myPyrebase=None):
         'Poppins Bold': '/fonts/poppins/Poppins-Bold.ttf'
     }
 
-    email_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=TEXT_SIZE, border_color= TEXT_COLOR, color= MAIN_BACKGROUND)
-    password_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=TEXT_SIZE, border_color= TEXT_COLOR, color= SECONDARY_BACKGROUND, password= True)
+    email_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=10, border_color= TEXT_COLOR, color= MAIN_BACKGROUND)
+    password_input = TextField(width=250, height= 50, bgcolor= TEXT_COLOR, text_size=10, border_color= TEXT_COLOR, color= SECONDARY_BACKGROUND, password= True, can_reveal_password=True)
 
     login_page_content = Column(
         alignment= MainAxisAlignment.CENTER,
@@ -156,10 +162,9 @@ def LoginPage(page: Page, myPyrebase=None):
     )
 
     login_page = Container(
-         height= BASE_HEIGHT,
+         height= page.height,
                 alignment = alignment.center,
                 bgcolor= SECONDARY_BACKGROUND,
-                border_radius= BORDER_RAD, 
                  padding= padding.only(
             top=15, bottom=15, left=15, right = 15
         ),

@@ -30,8 +30,12 @@ class DoctorCard(UserControl):
         chatroom_url = f"/chatroom?chat_room_id={chat_room_id}&doctor_id={self.doctor_id}"
         self.page.go(chatroom_url)
     
+    def navigate_to_doctor_detials(self, e):
+        self.page.go(f'/doctor_details?doctor_id={self.doctor_id}')
+    
     def build(self):
         return Container(
+                    on_click = self.navigate_to_doctor_detials,
                     width = 200,
                     bgcolor= MAIN_BACKGROUND_OPACITY, 
                     padding = padding.only(top =15, left= 15, right=15, bottom =15),
@@ -45,7 +49,7 @@ class DoctorCard(UserControl):
                                 controls=[ 
                                     Container(
                                         height=75, 
-                                        width=75, 
+                                        width=75,
                                         bgcolor=TEXT_COLOR,
                                         alignment = alignment.center,
                                         border_radius=50, 

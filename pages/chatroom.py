@@ -44,6 +44,7 @@ def ChatroomPage(page: Page, myPyrebase, chat_room_id):
             message_input.value = ""
             page.update()
     
+    
     def clean_notes():
         messages.clear()
         messages.append(Text(" "))
@@ -51,6 +52,7 @@ def ChatroomPage(page: Page, myPyrebase, chat_room_id):
 
 
     chatroom_content = Column(
+        height= page.height,
         controls=[
             Row(
               alignment= MainAxisAlignment.SPACE_BETWEEN,
@@ -61,14 +63,14 @@ def ChatroomPage(page: Page, myPyrebase, chat_room_id):
             ),
             Column(
                 messages,
-                scroll=True, 
-                height= 655,
+                scroll=ScrollMode.HIDDEN, 
+                height= page.height * 0.80,
             ), 
             Row(
                 alignment = MainAxisAlignment.CENTER,
                 controls=[
                     Container(
-                        height= 50, 
+                        height= 50,
                         border_radius=BORDER_RAD, 
                         bgcolor= TEXT_COLOR,
                         padding = padding.only(left=5, right=5),
@@ -85,8 +87,7 @@ def ChatroomPage(page: Page, myPyrebase, chat_room_id):
     )
 
     chatroom_page = Container(
-        height= BASE_HEIGHT,
-        border_radius= BORDER_RAD, 
+        height= page.height, 
         bgcolor= SECONDARY_BACKGROUND,
         padding= padding.only( top=10, bottom=10, right=10, left=10),
         content = chatroom_content

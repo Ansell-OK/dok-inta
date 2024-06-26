@@ -8,7 +8,7 @@ def SplashPage(page: Page, myPyrebase = None):
     page.adaptive = True
 
     def on_load():
-        if myPyrebase.check_token():
+        if myPyrebase.check_token() == 'Success':
             page.go('/home')
     
 
@@ -27,7 +27,6 @@ def SplashPage(page: Page, myPyrebase = None):
         
 
     splash1 = Container(
-        border_radius= BORDER_RAD, 
         bgcolor= SECONDARY_BACKGROUND,
         alignment= alignment.center,
         padding= padding.only(
@@ -52,7 +51,7 @@ def SplashPage(page: Page, myPyrebase = None):
                 ), 
                 Container(height= 25),
                 Image(
-                    src = 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FOnline%20Doctor-rafiki.png?alt=media&token=02c3fde2-7e64-4046-a456-940fd72a0909', width= 350, height= 550
+                    src = 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FOnline%20Doctor-rafiki.png?alt=media&token=02c3fde2-7e64-4046-a456-940fd72a0909', width= page.width * 0.75, height= page.height * 0.75
                 ), 
                 Text('Diagnosis at your finger tips', color= TEXT_COLOR, size= TEXT_SIZE,font_family='Poppins Regular'), 
                 FloatingActionButton(
@@ -73,7 +72,6 @@ def SplashPage(page: Page, myPyrebase = None):
     )
     splash2 = Container(
         
-        border_radius= BORDER_RAD, 
         bgcolor= SECONDARY_BACKGROUND,
         padding= padding.only(
             top=15, bottom=15, left=15, right = 15
@@ -97,7 +95,7 @@ def SplashPage(page: Page, myPyrebase = None):
                 ), 
                 Container(height= 25),
                 Image(
-                    src = 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FChat%20bot-rafiki.png?alt=media&token=8f373db3-232b-464a-98e2-fb02ecbb69bb', width= 350, height= 550
+                    src = 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FChat%20bot-rafiki.png?alt=media&token=8f373db3-232b-464a-98e2-fb02ecbb69bb', width= page.width * 0.75, height= page.height * 0.75
                 ), 
                 Text('AI-Assisted Diagnosis and prescription', color= TEXT_COLOR, size= TEXT_SIZE,font_family='Poppins Regular'), 
                 FloatingActionButton(
@@ -118,8 +116,7 @@ def SplashPage(page: Page, myPyrebase = None):
 
     )
     splash3 = Container(
-        
-        border_radius= BORDER_RAD, 
+    
         bgcolor= SECONDARY_BACKGROUND,
         padding= padding.only(
             top=15, bottom=15, left=15, right = 15
@@ -143,7 +140,7 @@ def SplashPage(page: Page, myPyrebase = None):
                 ), 
                 Container(height= 25),
                 Image(
-                    src = 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FRemedy-rafiki.png?alt=media&token=d173976d-ff4d-4aec-a1fe-17ce77daecb6', width= 350, height= 550
+                    src = 'https://firebasestorage.googleapis.com/v0/b/dokinta-57cf8.appspot.com/o/assets%2FRemedy-rafiki.png?alt=media&token=d173976d-ff4d-4aec-a1fe-17ce77daecb6', width= page.width * 0.75, height= page.height * 0.75
                 ), 
                 Text('Real Time Consultations & Prescriptions', color= TEXT_COLOR, size= TEXT_SIZE,font_family='Poppins Regular'), 
                 FloatingActionButton(
@@ -173,7 +170,7 @@ def SplashPage(page: Page, myPyrebase = None):
 
     splash = Container(
                 
-                height= BASE_HEIGHT,
+                height= page.height,
                 content= splash_content
             )
 
